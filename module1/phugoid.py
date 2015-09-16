@@ -1,7 +1,8 @@
 #This script plots the flight path of the phugoid using the Lanchester model
 
 import numpy as np
-from matplotlib import pyplot as pp
+import pylab as pl
+pl.ion()
 
 # Set how floating-point errors are handled
 np.seterr(all='ignore')
@@ -80,12 +81,11 @@ def plot_flight_path(zt, z0, theta0):
         theta = theta + dtheta
     
     # Make a plot for the two vectors
-    pp.figure(figsize=(10,6))
-    pp.plot(x,-z, color='k', ls='-', lw=2.0, label="$z_t=\ %.1f,\\,z_0=\ %.1f,\\,\\theta_0=\ %.2f$" % (zt, z[0], theta0))
-    pp.axis('equal')
-    pp.title("Flight path for $C$ = %.3f" % C, fontsize=18)
-    pp.xlabel("$x$", fontsize=18)
-    pp.ylabel("$z$", fontsize=18)
-    pp.legend()
-    pp.show()
+    pl.figure(figsize=(10,6))
+    pl.plot(x,-z, color='k', ls='-', lw=2.0, label="$z_t=\ %.1f,\\,z_0=\ %.1f,\\,\\theta_0=\ %.2f$" % (zt, z[0], theta0))
+    pl.axis('equal')
+    pl.title("Flight path for $C$ = %.3f" % C, fontsize=18)
+    pl.xlabel("$x$", fontsize=18)
+    pl.ylabel("$z$", fontsize=18)
+    pl.legend()
     
