@@ -3,9 +3,10 @@ import numpy as np
 import pylab as pl
 pl.ion()
 '''Important notes:
-- we have an initialization, solving function and a ploting function
-- the three must be independent but mut must rely on one another
+- we have an initialization, a solving function and a ploting function
+- the three must be independent but must rely on one another
 - therefore the initialization must be made one time, outside the functions
+and it must return the values needed for the functions
 '''
 
 # Initialization of time grid with a function
@@ -151,3 +152,11 @@ pl.xlabel('$\Delta t$', fontsize=16)
 pl.ylabel('Error', fontsize=16)
 pl.loglog(dt_values,error_values, 'ko-') # a log-log plot
 pl.axis('equal')
+
+# Testing the functions
+z0 = 100.0
+b0 = 10.0
+dt = 0.01
+
+
+
