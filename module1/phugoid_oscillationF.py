@@ -2,57 +2,92 @@
 import numpy as np
 import pylab as pl
 pl.ion()
+'''Important notes:
+- we have an initialization, solving function and a ploting function
+- the three must be independent but mut must rely on one another
+- therefore the initialization must be made one time, outside the functions
+'''
 
-# Initialization of time grid
-T = 100.0
-dt = 0.025
-N = int(T/dt)+1
-t = np.linspace(0.0, T, N) # Challenge: makes this with range()
-#print t
+# Initialization of time grid with a function
+def prep(z0,b0,dt):
+    """Returns the values from the grid necesary for computing the solution
+    Parameters
+    ----------
+    z0 : float
+         initial altitude
+    b0 : float
+         upward velocity resulting from gust
+    dt : float
+         time increment
+        
+    Returns
+    -------
+    t : array of floats
+        time values of the grid
+    """
+    dt = 0.01
+    z0 = 100.0
+    zt = z0 # the same as the initial altitude
+    b0 = 10.0 # upward velocity resulting from gust
+    g = 9.81 # the gravity acceleration
+    
+    T = 100.0
+    N = int(T/dt)+1
+    t = np.linspace(0.0, T, N)
 
-# Initial conditions
-z0 = 100.0 # the initial altitude (the mean value of oscilation)
-b0 = 10.0 # upward velocity resulting from gust (this is a convention value)
-zt = 100.0 # the same velocity
-g = 9.81 # the gravity acceleration
 
-u = np.array([z0,b0]) # this matrix has only two values
-# u[0] -> z
-# u[1] -> b
-# these values will change with the time loop iterations
+# Creating a function that will compute the solution in time
+def z_numeric():
+    """Returns the values of altitude for each time step in a vector.
+    
+    Parameters
+    ----------
+    none
+        
+    Returns
+    -------
+    z : float
+        the vector of altitudes, with a corespondin value for each time step.
+    """
+    u = np.array([z0,b0]) # this matrix has only two values
+    # u[0] -> z
+    # u[1] -> b
+    # these values will change with the time loop iterations
 
-# Initialization of an array that will store the values of altitude
-z = np.zeros(N) # this creates a N dimension vector with values of zero 
-z[0] = z0 # the first value is the initial altitude
-
-# Time-loop with Euler's method: u(t+dt) = u(t) + dt * u'(t)
-for n in range(1,N):
-    u = u + dt*np.array([u[1],g*(1-u[0]/zt)])
-    z[n] = u[0] # store the value of altitude
-
+    # Initialization of an array that will store the values of altitude
+    z = np.zeros(N) # this creates a N dimension vector with values of zero 
+    z[0] = z0 # the first value is the initial altitude
+    
+    # Time-loop with Euler's method: u(t+dt) = u(t) + dt * u'(t)
+    for n in range(1,N):
+        u = u + dt*np.array([u[1],g*(1-u[0]/zt)])
+        z[n] = u[0] # store the value of altitude
+    
+    return z
+    
 # Visualising the results with plots (by pylab)
+# Calling the solution
+z = z_numeric()
+
+# Creating the plot
 pl.figure(figsize=(10, 5)) # setting the plot size
 pl.ylim(40,160) # limits of altitude
 pl.xlabel('Time', fontsize=14)
 pl.ylabel('Altitude', fontsize=14)
+pl.grid(True)
 pl.plot(t,z,'k-') # the actual command for plotting
 
-'''
-Observations:
-- with smaller values of b, the amplitudes of oscillations are smaller
-- with higer values of b, the amplitudes are higher
-- either way, the frecquency is the same
-- using negative values of b makes the phugoid to first decrease in altitude
-'''
 
 # Actually there is an exact solution and we want to test the numerical one
-w = np.sqrt(g/zt)
-A = b0*np.sqrt(zt/g)
-B = z0-zt
-z_exact = A*np.sin(w*t) + B*np.cos(w*t) + zt
+def z_exact():
+    w = np.sqrt(g/zt)
+    A = b0*np.sqrt(zt/g)
+    B = z0-zt
+    z_exact = A*np.sin(w*t) + B*np.cos(w*t) + zt
+    return z_exact
 
 # Plot the exact solution over the numerical one
-pl.plot(t,z_exact, 'r--')
+pl.plot(t,z_exact(), 'r--')
 pl.legend(['Numerical Solution','Analytical Solution'])
 
 # In the next steps we will calculate the error with the time step
@@ -116,4 +151,3 @@ pl.xlabel('$\Delta t$', fontsize=16)
 pl.ylabel('Error', fontsize=16)
 pl.loglog(dt_values,error_values, 'ko-') # a log-log plot
 pl.axis('equal')
-

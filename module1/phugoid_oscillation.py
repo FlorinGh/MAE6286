@@ -13,7 +13,7 @@ t = np.linspace(0.0, T, N) # Challenge: makes this with range()
 # Initial conditions
 z0 = 100.0 # the initial altitude (the mean value of oscilation)
 b0 = 10.0 # upward velocity resulting from gust (this is a convention value)
-zt = 100.0 # the same velocity
+zt = 100.0 # the same as the initial altitude
 g = 9.81 # the gravity acceleration
 
 u = np.array([z0,b0]) # this matrix has only two values
@@ -35,6 +35,7 @@ pl.figure(figsize=(10, 5)) # setting the plot size
 pl.ylim(40,160) # limits of altitude
 pl.xlabel('Time', fontsize=14)
 pl.ylabel('Altitude', fontsize=14)
+pl.grid(True)
 pl.plot(t,z,'k-') # the actual command for plotting
 
 '''
